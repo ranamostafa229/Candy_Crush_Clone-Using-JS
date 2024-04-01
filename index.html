@@ -6,8 +6,19 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Score: <span id="score">0</span></h1>
+    <div class="header">
+        <h1>Score: <span id="score">0</span></h1>
+        <h1>Turns: <span id="turns">0</span></h1>
+    </div>
     <div id="board"></div>
+    <div class="alert">
+        <img src="heart.png" width="100" height="100" alt="">
+        <h1>Game Over</h1>
+        <h2>high Score: <span id="highScore">1000</span></h2>
+        <h2>Score: <span id="finalScore">100</span></h2>
+        <button id="restart">Try Again</button>
+
+    </div>
 </body>
 <script src="main.js"></script>
 </html>

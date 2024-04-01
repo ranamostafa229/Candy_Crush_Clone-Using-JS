@@ -2,13 +2,16 @@ const candies = ["Blue", "Orange", "Green", "Yellow", "Red", "Purple"];
 let board = [];
 const rows = 9;
 const columns = 9;
-let score = 0;
+let score;
+let turns = 0;
 
 let currentTile;
 let otherTile;
+
 window.onload = function () {
   score = 0;
   startGame();
+
   // 1/10 of a second
   setInterval(function () {
     crushCandy();
@@ -17,12 +20,12 @@ window.onload = function () {
   }, 100);
 };
 
+const boardEl = document.querySelector("#board");
 function randomCandy() {
   return candies[Math.floor(Math.random() * candies.length)]; // 0-5.99
 }
 
 function startGame() {
-  score = 0;
   // initialize the board by generating random candies and placing them on the board
   for (let r = 0; r < rows; r++) {
     let row = [];
@@ -49,6 +52,7 @@ function startGame() {
 function dragStart() {
   // this refers to tile that was clicked on for dragging
   currentTile = this;
+  return true;
 }
 
 function dragOver(e) {
@@ -69,9 +73,9 @@ function dragDrop() {
 }
 
 function dragEnd() {
-  if (currentTile.src.includes("blank") || otherTile.src.includes("blank")) {
-    return;
-  }
+  // if (currentTile.src.includes("blank") || otherTile.src.includes("blank")) {
+  //   return;
+  // }
 
   let currentCoords = currentTile.id.split("."); // id='0-0' => ['0','0']
   let r = parseInt(currentCoords[0]);
@@ -100,8 +104,11 @@ function dragEnd() {
       currentTile.src = otherImg;
       otherTile.src = currentImg;
     }
+
     return true;
   }
+
+  return false;
 }
 
 function crushCandy() {
@@ -109,6 +116,7 @@ function crushCandy() {
   //crushFour()
   crushThree();
   document.getElementById("score").innerText = score;
+  document.getElementById("turns").innerText = turns;
 }
 
 function crushThree() {
@@ -126,8 +134,11 @@ function crushThree() {
         candy1.src = "./images/blank.png";
         candy2.src = "./images/blank.png";
         candy3.src = "./images/blank.png";
-        // dragStart() ? (score += 30) : (score = 0);
-        score += 30;
+
+        dragEnd() ? (score += 30) : (score = 0);
+        dragStart() ? turns++ : (turns = 0);
+        turns >= 3 ? endGame() : "";
+        // score += 30;
       }
     }
   }
@@ -145,13 +156,14 @@ function crushThree() {
         candy1.src = "./images/blank.png";
         candy2.src = "./images/blank.png";
         candy3.src = "./images/blank.png";
-        // dragStart() ? (score += 30) : (score = 0);
-        score += 30;
+
+        dragEnd() ? (score += 30) : (score = 0);
+        dragStart() ? turns++ : (turns = 0);
+        turns >= 3 ? endGame() : "";
       }
     }
   }
 }
-
 function checkValid() {
   // check rows
   for (let r = 0; r < rows; r++) {
@@ -209,4 +221,17 @@ function generateCandy() {
       board[0][c].src = "./images/" + randomCandy() + ".png";
     }
   }
+}
+
+function endGame() {
+  if (turns >= 3) {
+    setTimeout(function () {
+      alert("Game Over. Score: " + score);
+      restartGame();
+    }, 300);
+    console.log("Game Over. Score: " + score);
+  }
+}
+function restartGame() {
+  location.reload();
 }
