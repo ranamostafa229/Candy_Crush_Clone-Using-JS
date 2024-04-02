@@ -3,13 +3,14 @@ let board = [];
 const rows = 9;
 const columns = 9;
 let score;
+let hightScore = parseInt(localStorage.getItem("hightScore")) || 0;
 let turns = 0;
 
 let currentTile;
 let otherTile;
 
 window.onload = function () {
-  score = 0;
+  score = 10;
   startGame();
 
   // 1/10 of a second
@@ -20,7 +21,13 @@ window.onload = function () {
   }, 100);
 };
 
+const container = document.querySelector(".container");
 const boardEl = document.querySelector("#board");
+const failureAlertEl = document.querySelector(".failure_alert");
+const successAlertEl = document.querySelector(".success_alert");
+const restartBtn = document.querySelector("#restart");
+const replayBtn = document.querySelector("#replay");
+
 function randomCandy() {
   return candies[Math.floor(Math.random() * candies.length)]; // 0-5.99
 }
@@ -116,6 +123,8 @@ function crushCandy() {
   //crushFour()
   crushThree();
   document.getElementById("score").innerText = score;
+  document.getElementsByClassName("finalScore").item(0).innerText = score;
+  document.getElementsByClassName("finalScore").item(1).innerText = score;
   document.getElementById("turns").innerText = turns;
 }
 
@@ -135,10 +144,13 @@ function crushThree() {
         candy2.src = "./images/blank.png";
         candy3.src = "./images/blank.png";
 
-        dragEnd() ? (score += 30) : (score = 0);
+        if (dragEnd()) {
+          score += 30;
+          hightScore += 30;
+          localStorage.setItem("hightScore", hightScore);
+        }
         dragStart() ? turns++ : (turns = 0);
         turns >= 3 ? endGame() : "";
-        // score += 30;
       }
     }
   }
@@ -157,8 +169,15 @@ function crushThree() {
         candy2.src = "./images/blank.png";
         candy3.src = "./images/blank.png";
 
-        dragEnd() ? (score += 30) : (score = 0);
+        // dragEnd() ? (score += 30) : (score = 0);
+        if (dragEnd()) {
+          score += 30;
+          hightScore += 30;
+          localStorage.setItem("hightScore", hightScore);
+        }
+        // hightScore < score ? (hightScore = score) : "";
         dragStart() ? turns++ : (turns = 0);
+
         turns >= 3 ? endGame() : "";
       }
     }
@@ -224,12 +243,18 @@ function generateCandy() {
 }
 
 function endGame() {
-  if (turns >= 3) {
-    setTimeout(function () {
-      alert("Game Over. Score: " + score);
-      restartGame();
-    }, 300);
+  if (turns >= 3 && hightScore !== 0 && score < hightScore) {
     console.log("Game Over. Score: " + score);
+    console.log("Game Over. Score: " + hightScore);
+    failureAlertEl.classList.add("show");
+    container.style.filter = "brightness(0.5)";
+    restartBtn.addEventListener("click", restartGame);
+  } else {
+    console.log("win. score: " + score + " hightScore: ");
+
+    successAlertEl.classList.add("show");
+    container.style.filter = "brightness(0.5)";
+    replayBtn.addEventListener("click", restartGame);
   }
 }
 function restartGame() {
