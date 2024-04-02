@@ -1,4 +1,12 @@
 const candies = ["Blue", "Orange", "Green", "Yellow", "Red", "Purple"];
+const Striped_Candy = [
+  "Blue-Striped",
+  "Orange-Striped",
+  "Green-Striped",
+  "Yellow-Striped",
+  "Red-Striped",
+  "Purple-Striped",
+];
 let board = [];
 const rows = 9;
 const columns = 9;
@@ -10,7 +18,7 @@ let currentTile;
 let otherTile;
 
 window.onload = function () {
-  score = 10;
+  score = 0;
   startGame();
 
   // 1/10 of a second
@@ -31,6 +39,9 @@ const replayBtn = document.querySelector("#replay");
 function randomCandy() {
   return candies[Math.floor(Math.random() * candies.length)]; // 0-5.99
 }
+// function randomStripedCandy() {
+//   return Striped_Candy[Math.floor(Math.random() * Striped_Candy.length)];
+// }
 
 function startGame() {
   // initialize the board by generating random candies and placing them on the board
@@ -41,6 +52,7 @@ function startGame() {
       tile.id = r.toString() + "." + c.toString();
       tile.src = "./images/" + randomCandy() + ".png";
 
+      //
       // Drag functionality
       tile.addEventListener("dragstart", dragStart); // click on a candy, initialize drag process
       tile.addEventListener("dragover", dragOver); //clicking on a candy, moving mouse to drag the candy
@@ -120,7 +132,7 @@ function dragEnd() {
 
 function crushCandy() {
   //crushFive()
-  //crushFour()
+  crushFour();
   crushThree();
   document.getElementById("score").innerText = score;
   document.getElementsByClassName("finalScore").item(0).innerText = score;
@@ -146,8 +158,8 @@ function crushThree() {
 
         if (dragEnd()) {
           score += 30;
-          hightScore += 30;
-          localStorage.setItem("hightScore", hightScore);
+          // hightScore += 30;
+          score > hightScore ? localStorage.setItem("hightScore", score) : "";
         }
         dragStart() ? turns++ : (turns = 0);
         turns >= 3 ? endGame() : "";
@@ -172,12 +184,94 @@ function crushThree() {
         // dragEnd() ? (score += 30) : (score = 0);
         if (dragEnd()) {
           score += 30;
-          hightScore += 30;
-          localStorage.setItem("hightScore", hightScore);
+          // hightScore += 30;
+          score > hightScore ? localStorage.setItem("hightScore", score) : "";
         }
-        // hightScore < score ? (hightScore = score) : "";
+
         dragStart() ? turns++ : (turns = 0);
 
+        turns >= 3 ? endGame() : "";
+      }
+    }
+  }
+}
+function crushFour() {
+  // check rows
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < columns - 3; c++) {
+      let candy1 = board[r][c];
+      let candy2 = board[r][c + 1];
+      let candy3 = board[r][c + 2];
+      let candy4 = board[r][c + 3];
+      if (
+        candy1.src === candy2.src &&
+        candy2.src === candy3.src &&
+        candy3.src === candy4.src &&
+        !candy1.src.includes("blank")
+      ) {
+        if (candy1.src.includes("Blue")) {
+          candy3.src = "./images/Blue-Striped-Horizontal.png";
+        } else if (candy1.src.includes("Red")) {
+          candy3.src = "./images/Red-Striped-Horizontal.png";
+        } else if (candy1.src.includes("Yellow")) {
+          candy3.src = "./images/Yellow-Striped-Horizontal.png";
+        } else if (candy1.src.includes("Green")) {
+          candy3.src = "./images/Green-Striped-Horizontal.png";
+        } else if (candy1.src.includes("Purple")) {
+          candy3.src = "./images/Purple-Striped-Horizontal.png";
+        } else if (candy1.src.includes("Orange")) {
+          candy3.src = "./images/Orange-Striped-Horizontal.png";
+        }
+        candy1.src = `./images/blank.png`;
+        // candy2.src = "./images/Blue-Striped-Vertical.png";
+        candy2.src = "./images/blank.png";
+        candy4.src = "./images/blank.png";
+        if (dragEnd()) {
+          score += 50;
+          // hightScore += 50;
+          score > hightScore ? localStorage.setItem("hightScore", score) : "";
+        }
+        dragStart() ? turns++ : (turns = 0);
+        turns >= 3 ? endGame() : "";
+      }
+    }
+  }
+  // check columns
+  for (let c = 0; c < columns; c++) {
+    for (let r = 0; r < rows - 3; r++) {
+      let candy1 = board[r][c];
+      let candy2 = board[r + 1][c];
+      let candy3 = board[r + 2][c];
+      let candy4 = board[r + 3][c];
+      if (
+        candy1.src === candy2.src &&
+        candy2.src === candy3.src &&
+        candy3.src === candy4.src &&
+        !candy1.src.includes("blank")
+      ) {
+        if (candy1.src.includes("Blue")) {
+          candy2.src = "./images/Blue-Striped-Horizontal.png";
+        } else if (candy1.src.includes("Red")) {
+          candy2.src = "./images/Red-Striped-Horizontal.png";
+        } else if (candy1.src.includes("Yellow")) {
+          candy2.src = "./images/Yellow-Striped-Horizontal.png";
+        } else if (candy1.src.includes("Green")) {
+          candy2.src = "./images/Green-Striped-Horizontal.png";
+        } else if (candy1.src.includes("Purple")) {
+          candy2.src = "./images/Purple-Striped-Horizontal.png";
+        } else if (candy1.src.includes("Orange")) {
+          candy2.src = "./images/Orange-Striped-Horizontal.png";
+        }
+        candy1.src = "./images/blank.png";
+        // candy2.src = "./images/Blue-Striped-Horizontal.png";
+        candy3.src = "./images/blank.png";
+        candy4.src = "./images/blank.png";
+        if (dragEnd()) {
+          score += 50;
+          // hightScore += 50;
+          score > hightScore ? localStorage.setItem("hightScore", score) : "";
+        }
+        dragStart() ? turns++ : (turns = 0);
         turns >= 3 ? endGame() : "";
       }
     }
