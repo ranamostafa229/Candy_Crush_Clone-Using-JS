@@ -1,8 +1,6 @@
 body {
   background: url("./background1.jpg") no-repeat center center fixed;
   background-size: cover;
-  /* font-family: Arial, Helvetica, sans-serif; */
-  /* font-family: "Tutti Paffuti NF W01 Regular", sans-serif; */
   font-family: "Knewave", system-ui;
   color: white;
   text-align: center;
@@ -22,9 +20,7 @@ body {
   flex-wrap: wrap;
   width: 450px;
   height: 450px;
-  /* background-color: aliceblue; */
   background-color: #f5ceda;
-  /* border: 1px solid lightblue; */
   border: 4px solid #f6a1b9;
   border-radius: 10px;
   margin: 0 auto;
@@ -42,7 +38,6 @@ body {
   display: flex;
   flex-direction: column;
   padding: 20px;
-  /* background-color: #f5ceda; */
   background-color: #fee7f1;
   color: #1583d8;
   align-items: center;

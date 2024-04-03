@@ -1,18 +1,10 @@
 const candies = ["Blue", "Orange", "Green", "Yellow", "Red", "Purple"];
-const Striped_Candy = [
-  "Blue-Striped",
-  "Orange-Striped",
-  "Green-Striped",
-  "Yellow-Striped",
-  "Red-Striped",
-  "Purple-Striped",
-];
 let board = [];
 const rows = 9;
 const columns = 9;
 let score;
-let hightScore = parseInt(localStorage.getItem("hightScore")) || 0;
-let turns = 0;
+let highScore = parseInt(localStorage.getItem("highScore")) || 0;
+let turns = 10;
 
 let currentTile;
 let otherTile;
@@ -20,7 +12,6 @@ let otherTile;
 window.onload = function () {
   score = 0;
   startGame();
-
   // 1/10 of a second
   setInterval(function () {
     crushCandy();
@@ -39,9 +30,6 @@ const replayBtn = document.querySelector("#replay");
 function randomCandy() {
   return candies[Math.floor(Math.random() * candies.length)]; // 0-5.99
 }
-// function randomStripedCandy() {
-//   return Striped_Candy[Math.floor(Math.random() * Striped_Candy.length)];
-// }
 
 function startGame() {
   // initialize the board by generating random candies and placing them on the board
@@ -158,11 +146,27 @@ function crushThree() {
 
         if (dragEnd()) {
           score += 30;
-          // hightScore += 30;
-          score > hightScore ? localStorage.setItem("hightScore", score) : "";
+          score > highScore ? localStorage.setItem("highScore", score) : "";
         }
-        dragStart() ? turns++ : (turns = 0);
-        turns >= 3 ? endGame() : "";
+        dragStart() ? turns-- : "";
+        turns === 0 ? endGame() : "";
+      }
+      if (
+        (candy1.src.includes("Striped") ||
+          candy2.src.includes("Striped") ||
+          candy3.src.includes("Striped")) &&
+        !candy1.src.includes("blank") &&
+        (candy1.src === candy2.src ||
+          candy2.src === candy3.src ||
+          candy3.src === candy1.src)
+      ) {
+        destroyRow(r, board);
+        if (dragEnd()) {
+          score += 60;
+          score > highScore ? localStorage.setItem("highScore", score) : "";
+        }
+        dragStart() ? turns-- : "";
+        turns === 0 ? endGame() : "";
       }
     }
   }
@@ -181,16 +185,29 @@ function crushThree() {
         candy2.src = "./images/blank.png";
         candy3.src = "./images/blank.png";
 
-        // dragEnd() ? (score += 30) : (score = 0);
         if (dragEnd()) {
           score += 30;
-          // hightScore += 30;
-          score > hightScore ? localStorage.setItem("hightScore", score) : "";
+          score > highScore ? localStorage.setItem("highScore", score) : "";
         }
-
-        dragStart() ? turns++ : (turns = 0);
-
-        turns >= 3 ? endGame() : "";
+        dragStart() ? turns-- : "";
+        turns === 0 ? endGame() : "";
+      }
+      if (
+        (candy1.src.includes("Striped") ||
+          candy2.src.includes("Striped") ||
+          candy3.src.includes("Striped")) &&
+        !candy1.src.includes("blank") &&
+        (candy1.src === candy2.src ||
+          candy2.src === candy3.src ||
+          candy3.src === candy1.src)
+      ) {
+        destroyColumn(c, board);
+        if (dragEnd()) {
+          score += 60;
+          score > highScore ? localStorage.setItem("highScore", score) : "";
+        }
+        dragStart() ? turns-- : "";
+        turns === 0 ? endGame() : "";
       }
     }
   }
@@ -228,11 +245,10 @@ function crushFour() {
         candy4.src = "./images/blank.png";
         if (dragEnd()) {
           score += 50;
-          // hightScore += 50;
-          score > hightScore ? localStorage.setItem("hightScore", score) : "";
+          score > highScore ? localStorage.setItem("highScore", score) : "";
         }
-        dragStart() ? turns++ : (turns = 0);
-        turns >= 3 ? endGame() : "";
+        dragStart() ? turns-- : "";
+        turns === 0 ? endGame() : "";
       }
     }
   }
@@ -263,16 +279,14 @@ function crushFour() {
           candy2.src = "./images/Orange-Striped-Horizontal.png";
         }
         candy1.src = "./images/blank.png";
-        // candy2.src = "./images/Blue-Striped-Horizontal.png";
         candy3.src = "./images/blank.png";
         candy4.src = "./images/blank.png";
         if (dragEnd()) {
           score += 50;
-          // hightScore += 50;
-          score > hightScore ? localStorage.setItem("hightScore", score) : "";
+          score > highScore ? localStorage.setItem("highScore", score) : "";
         }
-        dragStart() ? turns++ : (turns = 0);
-        turns >= 3 ? endGame() : "";
+        dragStart() ? turns-- : "";
+        turns === 0 ? endGame() : "";
       }
     }
   }
@@ -291,6 +305,17 @@ function checkValid() {
       ) {
         return true;
       }
+      if (
+        (candy1.src.includes("Striped") ||
+          candy2.src.includes("Striped") ||
+          candy3.src.includes("Striped")) &&
+        !candy1.src.includes("blank") &&
+        (candy1.src === candy2.src ||
+          candy2.src === candy3.src ||
+          candy3.src === candy1.src)
+      ) {
+        return true;
+      }
     }
   }
   // check columns
@@ -303,6 +328,17 @@ function checkValid() {
         candy1.src === candy2.src &&
         candy2.src === candy3.src &&
         !candy1.src.includes("blank")
+      ) {
+        return true;
+      }
+      if (
+        (candy1.src.includes("Striped") ||
+          candy2.src.includes("Striped") ||
+          candy3.src.includes("Striped")) &&
+        !candy1.src.includes("blank") &&
+        (candy1.src === candy2.src ||
+          candy2.src === candy3.src ||
+          candy3.src === candy1.src)
       ) {
         return true;
       }
@@ -337,14 +373,14 @@ function generateCandy() {
 }
 
 function endGame() {
-  if (turns >= 3 && hightScore !== 0 && score < hightScore) {
+  if (turns === 0 && score < highScore) {
     console.log("Game Over. Score: " + score);
-    console.log("Game Over. Score: " + hightScore);
+    console.log("Game Over. Score: " + highScore);
     failureAlertEl.classList.add("show");
     container.style.filter = "brightness(0.5)";
     restartBtn.addEventListener("click", restartGame);
   } else {
-    console.log("win. score: " + score + " hightScore: ");
+    console.log("win. score: " + score + " highScore: ");
 
     successAlertEl.classList.add("show");
     container.style.filter = "brightness(0.5)";
@@ -353,4 +389,18 @@ function endGame() {
 }
 function restartGame() {
   location.reload();
+}
+
+// Function to destroy an entire column
+function destroyColumn(columnIndex, board) {
+  for (let r = 0; r < rows; r++) {
+    board[r][columnIndex].src = "./images/blank.png";
+  }
+}
+
+// Function to destroy an entire row
+function destroyRow(rowIndex, board) {
+  for (let c = 0; c < columns; c++) {
+    board[rowIndex][c].src = "./images/blank.png";
+  }
 }
