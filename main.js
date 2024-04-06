@@ -40,7 +40,6 @@ function startGame() {
       tile.id = r.toString() + "." + c.toString();
       tile.src = "./images/" + randomCandy() + ".png";
 
-      //
       // Drag functionality
       tile.addEventListener("dragstart", dragStart); // click on a candy, initialize drag process
       tile.addEventListener("dragover", dragOver); //clicking on a candy, moving mouse to drag the candy
@@ -119,9 +118,7 @@ function dragEnd() {
 }
 
 function crushCandy() {
-  //crushFive()
-  crushFour();
-  crushThree();
+  !crushFour() ? crushThree() : crushFour();
   document.getElementById("score").innerText = score;
   document.getElementsByClassName("finalScore").item(0).innerText = score;
   document.getElementsByClassName("finalScore").item(1).innerText = score;
@@ -226,23 +223,10 @@ function crushFour() {
         candy3.src === candy4.src &&
         !candy1.src.includes("blank")
       ) {
-        if (candy1.src.includes("Blue")) {
-          candy3.src = "./images/Blue-Striped-Horizontal.png";
-        } else if (candy1.src.includes("Red")) {
-          candy3.src = "./images/Red-Striped-Horizontal.png";
-        } else if (candy1.src.includes("Yellow")) {
-          candy3.src = "./images/Yellow-Striped-Horizontal.png";
-        } else if (candy1.src.includes("Green")) {
-          candy3.src = "./images/Green-Striped-Horizontal.png";
-        } else if (candy1.src.includes("Purple")) {
-          candy3.src = "./images/Purple-Striped-Horizontal.png";
-        } else if (candy1.src.includes("Orange")) {
-          candy3.src = "./images/Orange-Striped-Horizontal.png";
-        }
+        candy4.src = checkStripedCandy("Horizontal", candy1, candy4);
         candy1.src = `./images/blank.png`;
-        // candy2.src = "./images/Blue-Striped-Vertical.png";
         candy2.src = "./images/blank.png";
-        candy4.src = "./images/blank.png";
+        candy3.src = "./images/blank.png";
         if (dragEnd()) {
           score += 50;
           score > highScore ? localStorage.setItem("highScore", score) : "";
@@ -265,22 +249,10 @@ function crushFour() {
         candy3.src === candy4.src &&
         !candy1.src.includes("blank")
       ) {
-        if (candy1.src.includes("Blue")) {
-          candy2.src = "./images/Blue-Striped-Horizontal.png";
-        } else if (candy1.src.includes("Red")) {
-          candy2.src = "./images/Red-Striped-Horizontal.png";
-        } else if (candy1.src.includes("Yellow")) {
-          candy2.src = "./images/Yellow-Striped-Horizontal.png";
-        } else if (candy1.src.includes("Green")) {
-          candy2.src = "./images/Green-Striped-Horizontal.png";
-        } else if (candy1.src.includes("Purple")) {
-          candy2.src = "./images/Purple-Striped-Horizontal.png";
-        } else if (candy1.src.includes("Orange")) {
-          candy2.src = "./images/Orange-Striped-Horizontal.png";
-        }
+        candy4.src = checkStripedCandy("Vertical", candy1, candy4);
         candy1.src = "./images/blank.png";
+        candy2.src = "./images/blank.png";
         candy3.src = "./images/blank.png";
-        candy4.src = "./images/blank.png";
         if (dragEnd()) {
           score += 50;
           score > highScore ? localStorage.setItem("highScore", score) : "";
@@ -391,6 +363,22 @@ function restartGame() {
   location.reload();
 }
 
+function checkStripedCandy(direction, candy1, candy2) {
+  if (candy1.src.includes("Blue")) {
+    candy2.src = `./images/Blue-Striped-${direction}.png`;
+  } else if (candy1.src.includes("Red")) {
+    candy2.src = `./images/Red-Striped-${direction}.png`;
+  } else if (candy1.src.includes("Yellow")) {
+    candy2.src = `./images/Yellow-Striped-${direction}.png`;
+  } else if (candy1.src.includes("Green")) {
+    candy2.src = `./images/Green-Striped-${direction}.png`;
+  } else if (candy1.src.includes("Purple")) {
+    candy2.src = `./images/Purple-Striped-${direction}.png`;
+  } else if (candy1.src.includes("Orange")) {
+    candy2.src = `./images/Orange-Striped-${direction}.png`;
+  }
+  return candy2.src;
+}
 // Function to destroy an entire column
 function destroyColumn(columnIndex, board) {
   for (let r = 0; r < rows; r++) {
